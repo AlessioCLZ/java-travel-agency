@@ -20,24 +20,72 @@ public class Holiday
 	 */
 		
 		private String destination, start, end;
-		private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		LocalDate dateFromStartString, dateFromEndString;
 	
 	public Holiday(String destination, String start, String end) throws NullPointerException, Exception {
 		super();
 		
+		boolean validParameters=true;
+		String eMessage= "I dati inseriti non sono validi.";
+		
 		dateFromStartString = LocalDate.parse(start, dateFormatter); //trasformo la stringa in un LocalDate
 		dateFromEndString = LocalDate.parse(end, dateFormatter);
 		
-		hasValidDestination(destination);
+		try
+		{
+			hasValidDestination(destination);
+		}
+		catch (NullPointerException npe)
+		{
+			validParameters=false;
+			eMessage+= "\n" + npe.getMessage();
+		}
 		
-		hasValidStart(start);
 		
-		hasValidEnd(end);
+		try
+		{
+			hasValidStart(start);
+		}
+		catch(NullPointerException npe)
+		{
+			validParameters=false;
+			eMessage+= "\n" + npe.getMessage();
+
+		}
+		catch (Exception e)
+		{
+			validParameters=false;
+			eMessage+= "\n" + e.getMessage();
+		}
 		
-		this.destination = destination;
-		this.start = start;
-		this.end = end;
+		try
+		{
+			hasValidEnd(end);
+		}
+		catch (NullPointerException npe)
+		{
+			validParameters=false;
+			eMessage+= "\n" + npe.getMessage();
+
+		}
+		catch (Exception e)
+		{
+			validParameters=false;
+			eMessage+= "\n" + e.getMessage();
+
+		}
+		
+		if (validParameters)
+		{
+			this.destination = destination;
+			this.start = start;
+			this.end = end;
+		}
+		else
+		{
+			throw new Exception(eMessage);
+		}
 		
 		
 	}
@@ -81,7 +129,18 @@ public class Holiday
 		
 	}
 	
-	
+	public String toString()
+	{
+		return "La vacanza a " 				+
+				destination					+
+				" che inizierà il giorno "	+
+				dateFromStartString 		+
+				" e finirà il giorno " 		+
+				dateFromEndString 			+
+				" avrà una durata di " 		+
+				getHolidayLength().getDays()+
+				"giorni."					;
+	}
 	
 	
 	
